@@ -1,12 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import Login from './Screen/Login';
+import Register from './Screen/Register';
+import Home from './Screen/Home';
+import DetailsDiary from './Screen/DetailsDiary';
+import { MD3LightTheme, PaperProvider } from 'react-native-paper';
+import EditDiary from './Screen/EditDiary';
+import CreateDiary from './Screen/CreateDiary';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider
+      theme={MD3LightTheme}
+    >
+      <CreateDiary />
+    </PaperProvider>
   );
 }
 
