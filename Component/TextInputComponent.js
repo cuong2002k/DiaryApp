@@ -13,6 +13,7 @@ const TextInputComponent = ({ holder, value, onchangeValue, style, secureTextEnt
             secureTextEntry={secureTextEntry}
             style={[styles.textInput, style]}
             multiline={multiline}
+            numberOfLines={10}
         />
     )
 }

@@ -1,43 +1,82 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TextInputComponent from '../Component/TextInputComponent'
 import ButtonComponent from '../Component/ButtonComponent';
-import { Appbar, Card } from 'react-native-paper';
+import { ActivityIndicator, Appbar, Card } from 'react-native-paper';
+import { updateDiary } from '../Store/DiaryStore';
+import { pickImage } from '../Store/UploadImage';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebaseConfig ';
+import { STYLE } from '../Style/style';
 
 
-const EditDiary = () => {
-    const [title, setTitle] = useState('');
-    const [content, setcontent] = useState('');
+const EditDiary = ({ route, navigation }) => {
+
+    const { id, title, content, url, direction, user, createdAt } = route.params;
+    const [titles, setTitle] = useState(title);
+    const [contents, setcontent] = useState(content);
+    const [urls, setUrl] = useState(url);
+    const [isChangeImage, setIsChangeImage] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const HandlerUpdateDiary = () => {
+        setIsLoading(true)
+        if (isChangeImage) {
+            updateDiary(id, titles, contents, direction, user, createdAt, urls)
+                .then(() => { navigation.goBack(), setIsLoading(false) })
+                .catch((e) => console.log(e))
+        }
+        else {
+            updateDiary(id, titles, contents, direction, user, createdAt)
+                .then(() => { navigation.goBack(), setIsLoading(false) })
+                .catch((e) => console.log(e));
+        }
+
+    }
+
+    const selectImage = () => {
+        pickImage().then((data) => {
+            setUrl(data);
+            setIsChangeImage(true)
+        })
+            .catch((e) => console.log(e))
+    }
+
     return (
         <View style={{ flex: 1 }}>
             <Appbar.Header>
-                <Appbar.BackAction onPress={() => { }} />
+                <Appbar.BackAction onPress={() => { navigation.goBack() }} />
                 <Appbar.Content title="Sửa nhật ký" />
-                <Appbar.Action icon="check" onPress={() => { }} />
+                <Appbar.Action icon="check" onPress={() => { HandlerUpdateDiary() }} />
             </Appbar.Header>
-            <View style={styles.container}>
-                <TextInputComponent
-                    holder={"Tiêu đề"}
-                    value={title}
-                    onchangeValue={setTitle}
-                />
-                <TextInputComponent
-                    holder={"Nội dung"}
-                    value={content}
-                    onchangeValue={setcontent}
-                    multiline={true}
-                    style={styles.textarea}
-                />
 
-                <Card style={{ marginTop: 10 }}>
-                    <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-                </Card>
-                <ButtonComponent
-                    title={"Chọn hình ảnh"}
-                    style={{ marginTop: 10, marginBottom: 10 }}
-                />
-            </View>
+            <>
+                {
+                    isLoading ? <> <ActivityIndicator size="large" color={STYLE.blue} /> </> :
+                        <View style={styles.container}>
+                            <TextInputComponent
+                                holder={"Tiêu đề"}
+                                value={titles}
+                                onchangeValue={setTitle}
+                            />
+                            <TextInputComponent
+                                holder={"Nội dung"}
+                                value={contents}
+                                onchangeValue={setcontent}
+                                multiline={true}
+                                style={styles.textarea}
+                            />
 
+                            <Card style={{ marginTop: 10 }}>
+                                <Card.Cover source={{ uri: urls }} />
+                            </Card>
+                            <ButtonComponent
+                                title={"Chọn hình ảnh"}
+                                style={{ marginTop: 10, marginBottom: 10 }}
+                                onPress={() => { selectImage() }}
+                            />
+                        </View>
+                }
+            </>
 
         </View>
     )

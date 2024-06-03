@@ -1,31 +1,64 @@
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Appbar, Avatar, Button, Card, Dialog, Portal } from 'react-native-paper'
+import { deleteDiary } from '../Store/DiaryStore'
+import { db } from '../firebaseConfig '
+import { doc, getDoc } from 'firebase/firestore'
+import { useFocusEffect } from '@react-navigation/native'
 const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
-const DetailsDiary = () => {
+const DetailsDiary = ({ route, navigation }) => {
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
+    const { id } = route.params.item;
+
+    const handlerDeleteDiary = () => {
+        deleteDiary(id).then(() => navigation.navigate("Home")).catch((e) => console.log(e));
+    }
+
     const [visible, setVisible] = React.useState(false);
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [url, setUrl] = useState('');
+    const [createdAt, setCreatedAt] = useState('');
+    const [direction, setDirection] = useState('');
+    const [user, setUser] = useState('');
+
+    useFocusEffect(
+        useCallback(() => {
+            const getDirary = async () => {
+                const docRef = doc(db, 'diary', id);
+                const docSnap = await getDoc(docRef);
+                const { title, content, createdAt, url, user, direction } = docSnap.data();
+                setTitle(title);
+                setContent(content)
+                setUrl(url)
+                setCreatedAt(createdAt)
+                setUser(user);
+                setDirection(direction);
+            }
+            getDirary();
+        }, [id])
+    )
     return (
         <View
             style={styles.container}
         >
             <Appbar.Header>
-                <Appbar.BackAction onPress={() => { }} />
+                <Appbar.BackAction onPress={() => { navigation.navigate("Home") }} />
                 <Appbar.Content title="Thông tin" />
-                <Appbar.Action icon="lead-pencil" onPress={() => { }} />
+                <Appbar.Action icon="lead-pencil" onPress={() => { navigation.navigate("EditDiary", { id, title, content, createdAt, url, user }) }} />
                 <Appbar.Action icon="trash-can" onPress={() => { showDialog() }} />
             </Appbar.Header>
             <Card
                 mode='elevated'
                 style={{ padding: 10, flex: 1 }}
             >
-                <Card.Title title="Tên nhật ký" subtitle="ngày" left={LeftContent} />
-                <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+                <Card.Title title={title} subtitle={createdAt} left={LeftContent} />
+                <Card.Cover source={{ uri: url }} />
                 <Card.Content
                     style={{ marginTop: 10 }}
                 >
-                    <Text variant="bodyMedium"> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. </Text>
+                    <Text variant="bodyMedium"> {content} </Text>
                 </Card.Content>
 
             </Card>
@@ -35,11 +68,11 @@ const DetailsDiary = () => {
                     <Dialog visible={visible} onDismiss={hideDialog}>
                         <Dialog.Title>Thông báo</Dialog.Title>
                         <Dialog.Content>
-                            <Text variant="bodyMedium">Bạn có muốn xóa không ?</Text>
+                            <Text variant="bodyMedium">Bạn có muốn xóa nhật ký này không ?</Text>
                         </Dialog.Content>
                         <Dialog.Actions>
                             <Button onPress={hideDialog}>Không</Button>
-                            <Button onPress={hideDialog}>Có</Button>
+                            <Button onPress={handlerDeleteDiary}>Có</Button>
                         </Dialog.Actions>
                     </Dialog>
                 </Portal>

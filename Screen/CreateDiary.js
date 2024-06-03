@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 import { ActivityIndicator, Appbar, Card } from 'react-native-paper';
 import ButtonComponent from '../Component/ButtonComponent';
 import TextInputComponent from '../Component/TextInputComponent';
-import { pickImage, saveRecord, uploadImage } from '../Store/UploadImage';
+import { pickImage, uploadImage } from '../Store/UploadImage';
 import { STYLE } from '../Style/style';
+import { saveRecord } from '../Store/DiaryStore';
 
 
 const CreateDiary = () => {
@@ -15,11 +16,13 @@ const CreateDiary = () => {
 
     const UploadImageToFirebase = () => {
         setIsLoading(true)
-        uploadImage(image, "image").then(() => {
-            setTitle("")
-            setcontent("")
-            setImage("")
-            setIsLoading(false)
+        uploadImage(image, "image").then((data) => {
+            const { downloadURL, fileDirection } = data;
+            setTitle("");
+            setcontent("");
+            setImage("");
+            setIsLoading(false);
+            saveRecord(title, content, downloadURL, fileDirection, "masenkogl@gmail.com", new Date().toLocaleDateString());
         }).catch((e) => console.log(e))
 
     }
@@ -33,8 +36,7 @@ const CreateDiary = () => {
     return (
         <View style={{ flex: 1 }}>
             <Appbar.Header>
-                <Appbar.BackAction onPress={() => { }} />
-                <Appbar.Content title="Sửa nhật ký" />
+                <Appbar.Content title="Thêm nhật ký" />
                 <Appbar.Action icon="check" onPress={() => {
                     UploadImageToFirebase()
                 }} />

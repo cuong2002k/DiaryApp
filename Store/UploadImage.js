@@ -12,7 +12,8 @@ async function uploadImage(uri, fileType) {
         }
 
         const blob = await response.blob();
-        const storageRef = ref(storage, "Stuff/" + new Date().getTime());
+        const fileDirection = "Stuff/" + new Date().getTime();
+        const storageRef = ref(storage, fileDirection);
 
         const uploadTask = uploadBytesResumable(storageRef, blob);
 
@@ -34,8 +35,8 @@ async function uploadImage(uri, fileType) {
                     getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
                         console.log("File available at", downloadURL);
                         // save record
-                        await saveRecord(fileType, downloadURL, new Date().toISOString());
-                        resolve();
+                        // await saveRecord(fileType, downloadURL, new Date().toISOString());
+                        resolve({ downloadURL, fileDirection });
                     }).catch(reject);
                 }
             );
@@ -64,19 +65,8 @@ const pickImage = () => {
 
 };
 
-async function saveRecord(title, url, createdAt) {
-    try {
-        const docRef = await addDoc(collection(db, "files"), {
-            title, url, createdAt
-        });
-        console.log("document saved correctly", docRef.id);
-    } catch (e) {
-        console.log(e);
-    }
-}
 
 export {
     uploadImage,
     pickImage,
-    saveRecord
 }
