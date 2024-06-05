@@ -63,20 +63,20 @@ const DetailsDiary = ({ route, navigation }) => {
 
             </Card>
 
-            <View>
-                <Portal>
-                    <Dialog visible={visible} onDismiss={hideDialog}>
-                        <Dialog.Title>Thông báo</Dialog.Title>
-                        <Dialog.Content>
-                            <Text variant="bodyMedium">Bạn có muốn xóa nhật ký này không ?</Text>
-                        </Dialog.Content>
-                        <Dialog.Actions>
-                            <Button onPress={hideDialog}>Không</Button>
-                            <Button onPress={handlerDeleteDiary}>Có</Button>
-                        </Dialog.Actions>
-                    </Dialog>
-                </Portal>
-            </View>
+
+            <Portal>
+                <Dialog visible={visible} onDismiss={hideDialog}>
+                    <Dialog.Title>{'Thông báo'}</Dialog.Title>
+                    <Dialog.Content>
+                        <Text variant="bodyMedium">{'Bạn có muốn xóa nhật ký này không ?'}</Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={hideDialog}>{'Không'}</Button>
+                        <Button onPress={handlerDeleteDiary}>{'Có'}</Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+
 
         </View>
     )

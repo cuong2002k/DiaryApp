@@ -6,23 +6,25 @@ import TextInputComponent from '../Component/TextInputComponent';
 import { pickImage, uploadImage } from '../Store/UploadImage';
 import { STYLE } from '../Style/style';
 import { saveRecord } from '../Store/DiaryStore';
+import { useMycontextProvider } from '../Store';
 
 
-const CreateDiary = () => {
+const CreateDiary = ({ navigation }) => {
     const [title, setTitle] = useState('');
     const [content, setcontent] = useState('');
     const [image, setImage] = useState('https://picsum.photos/700');
     const [isLoading, setIsLoading] = useState(false);
-
+    const [controller, dispatch] = useMycontextProvider();
+    const { userLogin } = controller;
     const UploadImageToFirebase = () => {
         setIsLoading(true)
         uploadImage(image, "image").then((data) => {
             const { downloadURL, fileDirection } = data;
             setTitle("");
             setcontent("");
-            setImage("");
+            setImage('https://picsum.photos/700');
             setIsLoading(false);
-            saveRecord(title, content, downloadURL, fileDirection, "masenkogl@gmail.com", new Date().toLocaleDateString());
+            saveRecord(title, content, downloadURL, fileDirection, userLogin.email, new Date().toLocaleDateString());
         }).catch((e) => console.log(e))
 
     }

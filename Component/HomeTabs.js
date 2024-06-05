@@ -4,6 +4,7 @@ import Home from "../Screen/Home";
 import CreateDiary from "../Screen/CreateDiary";
 import Profile from "../Screen/Profile";
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { STYLE } from "../Style/style";
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -25,8 +26,7 @@ export default function HomeTabs() {
                         marginLeft: 10,
                         elevation: 10,
                         borderRadius: 15,
-                        height: 70,
-                        backgroundColor: cardcolor,
+                        backgroundColor: STYLE.blue,
                         borderTopWidth: 0,
                     },
                 }}
@@ -35,7 +35,7 @@ export default function HomeTabs() {
                     name="Home"
                     component={Home}
                     options={{
-                        tabBarLabel: "Home",
+                        tabBarLabel: "Trang chủ",
                         tabBarIcon: ({ color, size }) => (
                             <Feather name="home" color={color} size={20} />
                         ),
@@ -45,7 +45,7 @@ export default function HomeTabs() {
                     name="Add"
                     component={CreateDiary}
                     options={{
-                        tabBarLabel: "Add",
+                        tabBarLabel: "Thêm nhật ký",
                         tabBarIcon: ({ size }) => (
                             <View
                             // style={{
@@ -65,10 +65,10 @@ export default function HomeTabs() {
                     }}
                 />
                 <Tab.Screen
-                    name="settings"
+                    name="account"
                     component={Profile}
                     options={{
-                        tabBarLabel: "Settings",
+                        tabBarLabel: "Cá nhân",
                         tabBarIcon: ({ color, size }) => (
                             <Feather name="settings" color={color} size={20} />
                         ),

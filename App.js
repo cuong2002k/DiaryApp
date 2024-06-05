@@ -12,44 +12,31 @@ import HomeTabs from './Component/HomeTabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
 import * as SplashScreen from "expo-splash-screen";
+import UserRouter from './Navigator/UserRouter';
+import HomeRouter from './Navigator/HomeRouter';
+import { MyContextControllerProvider } from './Store';
+import AdminRouter from './Navigator/AdminRouter';
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <PaperProvider
-        theme={MD3LightTheme}
-      >
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: {
-              marginTop:
-                Platform.OS === "ios" ? 0 : StatusBar.currentHeight,
-            },
-          }}
-
+    <MyContextControllerProvider>
+      <NavigationContainer>
+        <PaperProvider
+          theme={MD3LightTheme}
         >
-          <Stack.Screen
-            name="HomeTabs"
-            component={HomeTabs}
-            options={{ headerShown: false }}
-          />
+          <HomeRouter />
+        </PaperProvider>
+      </NavigationContainer>
+    </MyContextControllerProvider>
 
-          <Stack.Screen
-            name="EditDiary"
-            component={EditDiary}
-            options={{ headerShown: false }}
-          />
-
-          <Stack.Screen
-            name="DetailsDiary"
-            component={DetailsDiary}
-            options={{ headerShown: false }}
-          />
-
-        </Stack.Navigator>
-      </PaperProvider>
-    </NavigationContainer>
+    // <NavigationContainer>
+    //   <PaperProvider
+    //     theme={MD3LightTheme}
+    //   >
+    //     <AdminRouter />
+    //   </PaperProvider>
+    // </NavigationContainer>
   );
 }
 

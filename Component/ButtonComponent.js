@@ -3,12 +3,13 @@ import React from 'react'
 import { Button } from 'react-native-paper'
 import { STYLE } from '../Style/style'
 
-const ButtonComponent = ({ title, onPress, style }) => {
+const ButtonComponent = ({ title, onPress, style, disabled }) => {
   return (
     <Button
       mode={'contained'}
       onPress={onPress}
       style={[style, styles.button]}
+      disabled={disabled}
     >
       {title}
     </Button>
